@@ -1,50 +1,66 @@
 import React from 'react';
-import { Application, Graphics } from 'pixi.js'
+import { Application, Graphics, Loader, Sprite, Filter } from 'pixi.js'
+import { autobind } from 'core-decorators'
 import './index.css'
 
+@autobind
 class Edit extends React.Component {
   constructor(props) {
     super(props)
-    this.editRef = React.createRef()
+    this.edit2dRef = React.createRef()
+
+    this.state = {
+      width: window.innerWidth,
+      height: window.innerHeight
+    }
+
+    this.resources = Loader.shared.resources
   }
   
   componentDidMount() {
+    Loader.shared.add([
+      'Shaders/backgroundFragment.glsl'
+    ]).load(this.init)
+  }
+
+
+  init() {
     this.initApp()
-    this.drawGrid()
+    this.initBackground()
   }
+
   initApp() {
-    console.log(this.editRef)
     this.app = new Application({
-      view: this.editRef.current,
+      view: this.edit2dRef.current,
       transparent: true,
+      backgroundColor: 0xf0f0f0
     })
+
+    this.app.renderer.autoDensity = true
   }
 
-  drawGrid() {
-    const {height, width } = this.app.renderer
-    const line = new Graphics();
-    line.lineStyle(1, 0xcccccc, 1);
-
-    for (let i = 0; i < height; i += 50) {
-      line.moveTo(0, i)
-      line.lineTo(width, i)
-    }
-    for (let i = 0; i < width; i += 50) {
-      line.moveTo(i, 0)
-      line.lineTo(i, height)
-    }
-
-    line.interactive = true
-    line.mouseover= function(ev) {
-      console.log(ev)
-    }
-    
-    this.app.stage.addChild(line);
+  initBackground() {
+    // Create a new empty Sprite and define its size
+    const { width, height } = this.state
+    const background = Sprite()
+    background.width = width
+    background.height = height
+    // Get the code for the fragment shader from the loaded resources
+    const backgroundFragmentShader = this.resources['shaders/backgroundFragment.glsl'].data
+    // Create a new Filter using the fragment shader
+    // We don't need a custom vertex shader, so we set it as `undefined`
+    const backgroundFilter = Filter(undefined, backgroundFragmentShader)
+    // Assign the filter to the background Sprite
+    background.filters = [backgroundFilter]
+    // Add the background to the stage
+    this.app.stage.addChild(background)
   }
+
+
 
   render() {
     return (
-      <canvas id="edit" ref={this.editRef}></canvas>
+      <canvas id="edit2d" ref={this.edit2dRef}></canvas>
     )
   }
 }
