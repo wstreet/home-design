@@ -17,6 +17,10 @@
 .header {
   border-bottom: .5px solid #dcdce1;
   background: #ffffff;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  z-index: 99;
 }
 .tool_bar {
   border: none;
