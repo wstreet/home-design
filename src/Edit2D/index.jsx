@@ -59,8 +59,12 @@ class Edit extends React.Component {
   }
 
   initApp() {
+    const width = window.innerWidth
+    const height = window.innerHeight
     this.app = new Application({
       view: this.edit2dRef.current,
+      width,
+      height,
       transparent: true,
       backgroundColor: 0xf0f0f0
     })
@@ -94,8 +98,10 @@ class Edit extends React.Component {
   initEvents() {
     window.addEventListener('resize', this.onResize)
 
-    // TODO: 禁止canvas的contextmenu ... 没生效
-    this.edit2dRef.current.addEventListener('oncontextmenu', () => {return false})
+    // TODO: 禁止canvas的contextmenu ... addEventListener没生效
+    this.app.view.oncontextmenu = (e) => {
+      return false
+    }
 
     this.app.stage.interactive = true
 
