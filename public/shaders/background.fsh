@@ -5,11 +5,12 @@ precision mediump float;
 #endif
 
 uniform vec2 uPointerDiff;
+uniform float uGridUnit;
 
 
 // This function returns 1 if `coord` correspond to a grid line, 0 otherwise
-float isGridLine (vec2 coord) {
-  vec2 pixelsPerGrid = vec2(100.0, 100.0);
+float isGridLine (vec2 coord, float gridUnit) {
+  vec2 pixelsPerGrid = vec2(gridUnit, gridUnit);
   vec2 gridCoords = fract(coord / pixelsPerGrid);
   vec2 gridPixelCoords = gridCoords * pixelsPerGrid;
   vec2 gridLine = step(gridPixelCoords, vec2(1.0));
@@ -25,7 +26,7 @@ void main () {
   vec3 color = vec3(0.96);
   // If it is a grid line, change blue channel to 0.3
 
-  if (isGridLine(coord) == 1.0) {
+  if (isGridLine(coord, uGridUnit) == 1.0) {
     color.r = color.g = color.b = 1.0;
   }
  

@@ -103,6 +103,24 @@ class Edit extends React.Component {
       return false
     }
 
+    // 缩放事件
+    this.app.view.addEventListener('wheel', e => {
+      const { wheelDelta } = e
+      
+      // 缩小
+      if (wheelDelta > 0) {
+        this.uniforms.uGridUnit += 1.0
+      } else { // 放大
+        this.uniforms.uGridUnit -= 1.0
+      }
+      // if (this.uniforms.uGridUnit >= 100.0) {
+      //   this.uniforms.uGridUnit = 100.0
+      // }
+      // if (this.uniforms.uGridUnit <= 10.0) {
+      //   this.uniforms.uGridUnit = 10.0
+      // }
+    })
+
     this.app.stage.interactive = true
 
     // Pointer & touch events are normalized into
@@ -120,7 +138,8 @@ class Edit extends React.Component {
     this.uniforms = {
       uResolution: new Point(width, height),
       uPointerDiff: new Point(),
-      uPointerDown: this.pointerDownTarget
+      uPointerDown: this.pointerDownTarget,
+      uGridUnit: 50.0
     }
   }
 
